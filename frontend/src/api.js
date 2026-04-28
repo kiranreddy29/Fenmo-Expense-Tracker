@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:4000/expenses';
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/expenses`;
 
 export const fetchExpenses = async (category = '') => {
   const queryParams = new URLSearchParams();
