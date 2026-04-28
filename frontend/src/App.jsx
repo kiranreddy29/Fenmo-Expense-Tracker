@@ -9,7 +9,8 @@ function App() {
   const [expenses, setExpenses] = useState([]);
   const [total, setTotal] = useState('0.00');
   const [categoryFilter, setCategoryFilter] = useState('All');
-  
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [availableCategories, setAvailableCategories] = useState([]);  
   // States
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -20,11 +21,25 @@ function App() {
   const [globalError, setGlobalError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  // Extract unique categories for the dropdown from all loaded expenses
-  const availableCategories = useMemo(() => {
-    const cats = new Set(expenses.map(e => e.category));
-    return Array.from(cats).sort();
+  // Keep a running master list of categories so filtering doesn't erase them
+  useEffect(() => {
+    if (expenses.length > 0) {
+      setAvailableCategories(prev => {
+        const merged = new Set([...prev, ...expenses.map(e => e.category)]);
+        return Array.from(merged).sort();
+      });
+    }
   }, [expenses]);
+
+  // Frontend sorting to support both Newest and Oldest without backend changes
+  const sortedExpenses = useMemo(() => {
+    return [...expenses].sort((a, b) => {
+      const dateDiff = new Date(b.date) - new Date(a.date);
+      if (dateDiff !== 0) return sortOrder === 'newest' ? dateDiff : -dateDiff;
+      const createdDiff = new Date(b.created_at) - new Date(a.created_at);
+      return sortOrder === 'newest' ? createdDiff : -createdDiff;
+    });
+  }, [expenses, sortOrder]);
 
   const loadExpenses = async (category = '') => {
     setIsLoading(true);
@@ -59,6 +74,9 @@ function App() {
     try {
       await createExpense(formData, idempotencyKey);
       setSuccessMsg('Expense added successfully!');
+      
+      // Proactively add new category to dropdowns in case we are currently filtered
+      setAvailableCategories(prev => Array.from(new Set([...prev, formData.category])).sort());
       
       // Clear form via callback
       onSuccess();
@@ -109,24 +127,29 @@ function App() {
               onSubmit={handleAddExpense} 
               isSubmitting={isSubmitting} 
               validationErrors={validationErrors} 
+              availableCategories={availableCategories}
             />
           </aside>
           
           <section className="feed">
-            <SummaryCard total={total} count={expenses.length} />
-            
             <div className="card feed-card">
               <FilterBar 
                 category={categoryFilter} 
                 onCategoryChange={setCategoryFilter} 
                 availableCategories={availableCategories} 
+                sortOrder={sortOrder}
+                onSortChange={setSortOrder}
               />
               <ExpenseTable 
-                expenses={expenses} 
+                expenses={sortedExpenses} 
                 isLoading={isLoading} 
                 isError={isError} 
                 onRetry={() => loadExpenses(categoryFilter)} 
               />
+            </div>
+            
+            <div style={{ marginTop: '1.5rem' }}>
+              <SummaryCard total={total} count={expenses.length} />
             </div>
           </section>
         </div>

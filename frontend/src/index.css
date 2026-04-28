@@ -244,7 +244,25 @@ button {
 /* Table */
 .table-container {
   width: 100%;
-  overflow-x: auto;
+  height: 415px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for a cleaner look in the fixed container */
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.table-container::-webkit-scrollbar-track {
+  background: var(--bg-color);
+  border-radius: 4px;
+}
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .expense-table {
