@@ -16,11 +16,11 @@ db.pragma('foreign_keys = ON');
 db.exec(`
   CREATE TABLE IF NOT EXISTS expenses (
     id TEXT PRIMARY KEY,
-    amount_minor INTEGER NOT NULL,
-    currency TEXT NOT NULL DEFAULT 'INR',
+    amount_minor INTEGER NOT NULL CHECK (amount_minor > 0),
+    currency TEXT NOT NULL DEFAULT 'INR' CHECK (currency = 'INR'),
     category TEXT NOT NULL,
     description TEXT NOT NULL,
-    date TEXT NOT NULL,
+    date TEXT NOT NULL CHECK (length(date) = 10),
     created_at TEXT NOT NULL
   );
 
@@ -30,8 +30,14 @@ db.exec(`
     expense_id TEXT NOT NULL,
     response_body TEXT,
     created_at TEXT NOT NULL,
-    FOREIGN KEY (expense_id) REFERENCES expenses(id)
+    FOREIGN KEY (expense_id) REFERENCES expenses(id) ON DELETE CASCADE
   );
+
+  -- Index for fast category filtering (case-insensitive as required by PRD)
+  CREATE INDEX IF NOT EXISTS idx_expenses_category_lower ON expenses(LOWER(category));
+  
+  -- Composite index for fast default sorting (newest date first, then newest creation)
+  CREATE INDEX IF NOT EXISTS idx_expenses_date_created ON expenses(date DESC, created_at DESC);
 `);
 
 export default db;
