@@ -235,6 +235,16 @@ Create a new expense. Supports idempotent retries via the `Idempotency-Key` head
 
 ---
 
+## Known Limitations
+
+| Limitation | Context |
+|---|---|
+| **Ephemeral storage on Render** | Render's free tier uses an ephemeral filesystem — the SQLite database resets on each redeploy or service restart. This is acceptable for an assessment demo. A production deployment would use a persistent volume or switch to PostgreSQL. |
+| **No authentication** | The PRD specifies a single-user MVP. Auth is intentionally excluded to keep scope focused. |
+| **No edit / delete** | By design per the PRD — the MVP is append-only. |
+
+---
+
 ## Author
 
 **Kiran Reddy**

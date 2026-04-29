@@ -10,6 +10,13 @@ describe('Money Utilities', () => {
     expect(toMinorUnits('0.05')).toBe(5);
   });
 
+  it('should throw on non-string input', () => {
+    expect(() => toMinorUnits(null)).toThrow(TypeError);
+    expect(() => toMinorUnits(undefined)).toThrow(TypeError);
+    expect(() => toMinorUnits(123)).toThrow(TypeError);
+    expect(() => toMinorUnits('')).toThrow(TypeError);
+  });
+
   it('should convert minor units to display strings', () => {
     expect(toDisplayString(25000)).toBe('250.00');
     expect(toDisplayString(12345)).toBe('123.45');

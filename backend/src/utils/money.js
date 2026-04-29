@@ -3,7 +3,9 @@
  * Uses string manipulation to avoid floating-point precision issues.
  */
 export const toMinorUnits = (amountStr) => {
-  if (!amountStr || typeof amountStr !== 'string') return 0;
+  if (!amountStr || typeof amountStr !== 'string') {
+    throw new TypeError(`toMinorUnits expects a non-empty string, got: ${typeof amountStr}`);
+  }
   
   const [whole, fraction = ''] = amountStr.split('.');
   const paddedFraction = fraction.padEnd(2, '0').slice(0, 2);

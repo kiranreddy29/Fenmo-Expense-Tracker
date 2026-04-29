@@ -68,13 +68,8 @@ class ExpenseService {
       query += ` WHERE ${whereClauses.join(' AND ')}`;
     }
 
-    // Default sorting and secondary sort as per PRD
-    if (filters.sort === 'date_desc') {
-      query += ' ORDER BY date DESC, created_at DESC';
-    } else {
-      // Natural order if no sort specified, but PRD implies newest first as default MVP
-      query += ' ORDER BY date DESC, created_at DESC';
-    }
+    // Always sort newest first — frontend handles oldest-first via local array reversal
+    query += ' ORDER BY date DESC, created_at DESC';
 
     const expenses = db.prepare(query).all(...params).map(row => ({
       id: row.id,
