@@ -2,6 +2,15 @@
 
 A production-quality, full-stack Expense Tracker built as a timed internship assessment. Demonstrates clean architecture, API design with idempotency, integer-based financial accuracy, and a responsive React frontend — all without heavy frameworks or over-engineering.
 
+### 🔗 Live Demo
+
+| | URL |
+|---|---|
+| **Frontend** | [fenmo-expense-frontend.onrender.com](https://fenmo-expense-frontend.onrender.com/) |
+| **Backend API Docs** | [fenmo-expense-tracker-qd2j.onrender.com/api-docs](https://fenmo-expense-tracker-qd2j.onrender.com/api-docs) |
+
+> **Note:** Render free-tier services spin down after inactivity. The first request may take ~30 seconds to wake up.
+
 ![Dashboard](docs/screenshots/dashboard.png)
 
 ---
@@ -32,6 +41,7 @@ A production-quality, full-stack Expense Tracker built as a timed internship ass
 | Database | SQLite via `better-sqlite3` |
 | Testing | Vitest · Supertest (11 tests) |
 | API Docs | Swagger / OpenAPI 3.0 |
+| Deployment | Render (frontend + backend) |
 
 ---
 
